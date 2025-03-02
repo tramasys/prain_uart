@@ -1,0 +1,200 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+
+\geometry{margin=1in}
+
+\begin{document}
+
+\title{UART Communication Protocol for our Autonomous Vehicle}
+\author{Team 10 - PREN2}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+This document describes a 64-bit fixed-size UART protocol designed for our autonomous vehicle. Key requirements are:
+\begin{itemize}
+  \item Low overhead,
+  \item Robustness with CRC error detection,
+  \item Fixed frame size (2 read cycles for each frame),
+  \item Ability to carry up to 50 bits of parameter/reserved data.
+\end{itemize}
+
+\bigskip
+Each 64-bit frame is laid out as follows:
+\[
+\underbrace{\text{Addr}}_{2 \text{ bits}}
+\;\|\;
+\underbrace{\text{Command}}_{4 \text{ bits}}
+\;\|\;
+\underbrace{\text{Parameter/Reserved}}_{50 \text{ bits}}
+\;\|\;
+\underbrace{\text{CRC-8}}_{8 \text{ bits}}
+\]
+
+\section{Frame Definition}
+A single UART frame is 64 bits. The fields are:
+
+\begin{itemize}
+  \item \textbf{Address (2 bits)}:
+    \[
+      \text{Addr} \in \{0b00,\, 0b01,\, 0b11\}
+    \]
+    Example address mapping:
+    \begin{align*}
+      0b00 &\rightarrow \text{Raspberry Hat},\\
+      0b01 &\rightarrow \text{Motion Controller},\\
+      0b11 &\rightarrow \text{Grip Controller}.
+    \end{align*}
+
+  \item \textbf{Command (4 bits)}:
+    \[
+      \text{Command} \in \{ 0x0,\dots,0xF \}
+    \]
+    Commands currently in use are documented in Table~\ref{tab:commands}.
+
+  \item \textbf{Parameter/Reserved (50 bits)}:
+    \[
+      \underbrace{p_{49} \, p_{48} \, \dots \, p_{1} \, p_{0}}_{50 \text{ bits}}
+    \]
+    This field can encode various data types, including those listed in Table~\ref{tab:types} (e.g.\ \texttt{int16}, \texttt{float16}, flags, etc.) depending on the command. If fewer than 50 bits are needed, the unused bits can be reserved or zeroed.
+
+  \item \textbf{CRC-8 (8 bits)}:
+    \[
+      \underbrace{c_{7}\,c_{6}\,\dots\,c_{1}\,c_{0}}_{8 \text{ bits}}
+    \]
+    This is a standard 8-bit CRC computed over the top 56 bits.
+\end{itemize}
+
+\section{Command Reference}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{>{\ttfamily}c l l}
+\toprule
+\textnormal{Code} & \textnormal{Command} & \textnormal{Parameter(s)} \\
+\midrule
+0x0 & Move & int16: distance in cm (or 0/unused for infinite) \\
+0x1 & Reverse & int16: distance in cm (or 0/unused for infinite) \\
+0x2 & Turn & int16: degrees (positive=right, negative=left) \\
+0x3 & Rotate & int16: degrees (default 180 if 0/unused) \\
+0x4 & Stop Normal & (open) \\
+0x5 & Stop Emergency & (open) \\
+0x6 & Info & (open) \\
+0x7 & Ping & (open) \\
+0x8 & Error Check & (open) \\
+\bottomrule
+\end{tabular}
+\caption{Command Codes, Names, and Parameter Definitions}
+\label{tab:commands}
+\end{table}
+
+\section{Type Reference}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{l l}
+\toprule
+\textbf{Type} & \textbf{Range / Description} \\
+\midrule
+\texttt{int16} & -32768 to 32767 \\
+\texttt{int8} & -128 to 127 \\
+\texttt{uint16} & 0 to 65535 \\
+\texttt{uint8} & 0 to 255 \\
+\texttt{fp16 / float16} & half precision \\
+\texttt{fp8 / float8} & mini precision \\
+\bottomrule
+\end{tabular}
+\caption{Possible Data Types for Parameters}
+\label{tab:types}
+\end{table}
+
+\newpage
+\section{CRC-8 Computation}
+
+\subsection{Polynomial Definition}
+The polynomial we'll use for \texttt{CRC-8} is:
+\[
+  x^8 + x^2 + x^1 + x^0,
+\]
+often represented in hexadecimal as \texttt{0x07}.
+
+\subsection{Why This Polynomial?}
+\label{sec:why_poly}
+
+The polynomial
+\[
+P(x) \;=\; x^8 + x^2 + x + 1
+\]
+is known to be \emph{primitive} over the finite field \(\mathrm{GF}(2)\). This implies that the linear feedback shift register (LFSR) based on \(P(x)\) can generate any nonzero 8-bit sequence in a maximal cycle (of length \(2^8 - 1 = 255\)). In terms of CRC properties, using a primitive polynomial of degree 8 provides:
+
+\begin{itemize}
+  \item \textbf{Guaranteed detection of any single-bit error}: A one-bit error corresponds to the polynomial \(x^k\) for some \(k\). Because \(P(x)\) is primitive, \(x^k\) is never divisible by \(P(x)\) for \(0 \le k < 255\).
+  \item \textbf{Guaranteed detection of many double-bit errors}: If two bits are in error, the error polynomial is \(x^m + x^n\). Since \(P(x)\) is primitive, it cannot divide \(x^m + x^n\) unless \(m=n\). Thus, distinct double-bit errors (i.e.\ \(m \neq n\)) are almost always detected.\footnote{Strictly speaking, \emph{no} CRC polynomial can detect \emph{all} double-bit errors at arbitrary distances, but a primitive polynomial has a higher minimum distance for typical codeword lengths and is exceptionally good for short frames like ours.}
+  \item \textbf{Detection of bursts up to 8 bits long}: In general, an \(n\)-bit CRC can reliably detect bursts of up to \(n\) bits in length. Here, that means any burst error of up to 8 consecutive bits will \emph{not} yield a zero remainder when dividing by \(P(x)\).
+\end{itemize}
+
+\paragraph{Short Frame Advantage:}
+Because our frames are only 64 bits, the chance of an undetected multi-bit error is further reduced. For random error patterns, the probability of an undetected error is at most \(1\!/\!2^8 = 1/256\). Actual practical detection is typically even better than the pure random guess model, especially for correlated or bursty errors, due to how the polynomial aligns with short data lengths.
+
+\newpage
+\subsection{Computation Steps (Bitwise)}
+\begin{enumerate}
+  \item Initialize the CRC register:
+    \[
+      \text{crc} \gets 0x00.
+    \]
+  \item Process the first 7 bytes (56 bits) in the frame (i.e.\ \texttt{Addr}, \texttt{Command}, and \texttt{Parameter/Reserved}).
+  \item For each byte \texttt{b} among those 7 bytes:
+    \[
+      \text{crc} \gets \text{crc} \oplus \texttt{b}.
+    \]
+    Then, for each of the 8 bits in that byte:
+    \[
+      \begin{cases}
+        \text{if } (\text{crc} \,\&\, 0x80) \neq 0:
+            & \text{crc} \gets (\text{crc} \ll 1) \oplus 0x07 \\
+        \text{else}:
+            & \text{crc} \gets (\text{crc} \ll 1)
+      \end{cases}
+    \]
+    (Mask \texttt{crc} with \texttt{0xFF} after each shift to keep it at 8 bits.)
+
+  \item At the end of this 7-byte process, \texttt{crc} is the final CRC-8. Store it into the last byte of the 64-bit frame.
+\end{enumerate}
+
+\section{Transmit \& Receive Flow}
+
+\subsection{Transmit Flow}
+\begin{enumerate}
+  \item Construct the 56 bits of data, for example:
+  \[
+    \text{Frame\_Hi} = (\text{Addr} \ll 62)
+                      \;\vert\; (\text{Command} \ll 58)
+                      \;\vert\; (\text{Param}_{50} \ll 8).
+  \]
+  \item Compute CRC-8 across these 56 bits, producing one byte.
+  \item Append this \texttt{crc\_byte} as the final 8 bits.
+  \item Send the resulting 64-bit frame via UART.
+\end{enumerate}
+
+\subsection{Receive Flow}
+\begin{enumerate}
+  \item Read the full 64 bits from UART (fixed-size).
+  \item Separate the top 56 bits (\texttt{Addr + Command + Param/Reserved}) and the last 8 bits (the received CRC).
+  \item Compute a new CRC-8 over the 56 bits.
+  \item Compare the computed CRC with the received CRC:
+    \[
+      \text{if } \text{computedCRC} \neq \text{receivedCRC}
+      \quad \Longrightarrow \quad
+      \text{reject packet (error).}
+    \]
+  \item If the CRCs match, accept the frame and parse the 56 bits according to the protocol’s definitions.
+\end{enumerate}
+
+\end{document}
