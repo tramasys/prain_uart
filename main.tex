@@ -75,22 +75,22 @@ A single UART frame is 64 bits. The fields are:
 
 \begin{table}[h!]
 \centering
-\begin{tabular}{>{\ttfamily}c l l}
+\begin{tabular}{>{\ttfamily}c >{\ttfamily}c l}
 \toprule
-\textnormal{Code} & \textnormal{Command} & \textnormal{Parameter(s)} \\
+\textnormal{Hex} & \textnormal{Binary} & \textnormal{Command / Parameters} \\
 \midrule
-0x0 & Move & int16: distance in cm (or 0/unused for infinite) \\
-0x1 & Reverse & int16: distance in cm (or 0/unused for infinite) \\
-0x2 & Turn & int16: degrees (positive=right, negative=left) \\
-0x3 & Rotate & int16: degrees (default 180 if 0/unused) \\
-0x4 & Stop Normal & (open) \\
-0x5 & Stop Emergency & (open) \\
-0x6 & Info & (open) \\
-0x7 & Ping & (open) \\
-0x8 & Error Check & (open) \\
+0x0 & 0b0000 & Move (int16: distance in cm, 0/unused for infinite) \\
+0x1 & 0b0001 & Reverse (int16: distance in cm, 0/unused for infinite) \\
+0x2 & 0b0010 & Turn (int16: degrees, +right / $-$left) \\
+0x3 & 0b0011 & Rotate (int16: degrees, default 180 if 0/unused) \\
+0x4 & 0b0100 & Stop Normal (open) \\
+0x5 & 0b0101 & Stop Emergency (open) \\
+0x6 & 0b0110 & Info (open) \\
+0x7 & 0b0111 & Ping (open) \\
+0x8 & 0b1000 & Error Check (open) \\
 \bottomrule
 \end{tabular}
-\caption{Command Codes, Names, and Parameter Definitions}
+\caption{Command Codes, in Hex and Binary, with Parameter Definitions}
 \label{tab:commands}
 \end{table}
 
