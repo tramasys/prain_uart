@@ -348,3 +348,5 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
+# Exclude test executables
+**/prain_testexec
