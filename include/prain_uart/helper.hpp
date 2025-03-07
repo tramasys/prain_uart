@@ -17,7 +17,7 @@ struct limited_value {
             throw std::out_of_range("Value exceeds allowed bit-field range");
     }
 
-    // Allow construction from enum if its underlying type is T.
+    // Allow construction from enum if its underlying type is T
     template<typename U, typename = std::enable_if_t<
         std::is_enum<U>::value && std::is_same_v<std::underlying_type_t<U>, T>
     >>
@@ -31,6 +31,7 @@ struct limited_value {
 
 #define GETMASK(index, size) ((((uint64_t)1 << (size)) - 1ULL) << (index))
 #define READFROM(data, index, size) (((data) & GETMASK((index), (size))) >> (index))
+
 #define WRITETO(data, index, size, value) \
     ((data) = (((data) & ~GETMASK((index), (size))) | \
               (((static_cast<uint64_t>(value)) << (index)) & GETMASK((index), (size)))))
