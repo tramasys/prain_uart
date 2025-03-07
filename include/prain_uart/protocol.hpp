@@ -34,18 +34,20 @@ using addr_field = limited_value<uint8_t, 3>;
 using cmd_field  = limited_value<uint8_t, 15>;
 using crc_field  = limited_value<uint8_t, 255>;
 
-struct frame {
-    uint64_t field;
+class frame {
+private:
+    uint64_t _field;
 
-    inline uint8_t addr() const { return READFROM(field, 0, 2); }
-    inline uint8_t cmd() const { return READFROM(field, 2, 4); }
-    inline uint64_t parameter() const { return READFROM(field, 6, 50); }
-    inline uint8_t crc() const { return READFROM(field, 56, 8); }
+public:
+    inline uint8_t addr() const { return READFROM(_field, 0, 2); }
+    inline uint8_t cmd() const { return READFROM(_field, 2, 4); }
+    inline uint64_t parameter() const { return READFROM(_field, 6, 50); }
+    inline uint8_t crc() const { return READFROM(_field, 56, 8); }
 
-    inline void set_addr(addr_field a) { WRITETO(field, 0, 2, static_cast<uint8_t>(a)); }
-    inline void set_cmd(cmd_field c) { WRITETO(field, 2, 4, static_cast<uint8_t>(c)); }
-    inline void set_parameter(uint64_t p) { WRITETO(field, 6, 50, p); }
-    inline void set_crc(crc_field c) { WRITETO(field, 56, 8, static_cast<uint8_t>(c)); }
+    inline void set_addr(addr_field a) { WRITETO(_field, 0, 2, static_cast<uint8_t>(a)); }
+    inline void set_cmd(cmd_field c) { WRITETO(_field, 2, 4, static_cast<uint8_t>(c)); }
+    inline void set_parameter(uint64_t p) { WRITETO(_field, 6, 50, p); }
+    inline void set_crc(crc_field c) { WRITETO(_field, 56, 8, static_cast<uint8_t>(c)); }
 };
 
 /*
