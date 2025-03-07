@@ -30,6 +30,14 @@
 		"string": "cpp",
 		"string_view": "cpp",
 		"span": "cpp",
-		"type_traits": "cpp"
+		"type_traits": "cpp",
+		"charconv": "cpp",
+		"optional": "cpp",
+		"format": "cpp",
+		"ratio": "cpp",
+		"system_error": "cpp",
+		"functional": "cpp",
+		"tuple": "cpp",
+		"utility": "cpp"
 	}
 }

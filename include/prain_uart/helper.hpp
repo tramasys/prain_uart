@@ -29,9 +29,11 @@ struct limited_value {
     constexpr operator T() const { return value; }
 };
 
-#define GETMASK(index, size) ((((size_t)1 << (size)) - 1) << (index))
+#define GETMASK(index, size) ((((uint64_t)1 << (size)) - 1ULL) << (index))
 #define READFROM(data, index, size) (((data) & GETMASK((index), (size))) >> (index))
-#define WRITETO(data, index, size, value) ((data) = (((data) & (~GETMASK((index), (size)))) | (((value) << (index)) & (GETMASK((index), (size))))))
+#define WRITETO(data, index, size, value) \
+    ((data) = (((data) & ~GETMASK((index), (size))) | \
+              (((static_cast<uint64_t>(value)) << (index)) & GETMASK((index), (size)))))
 
 #define FIELD(data, name, index, size) \
 	inline decltype(data) name() const { return READFROM(data, index, size); } \
