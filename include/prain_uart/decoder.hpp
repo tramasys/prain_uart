@@ -3,7 +3,7 @@
 #include <cstdint>
 #include "protocol.hpp"
 
-namespace pren_uart {
+namespace prain_uart {
 
 class decoder
 {
@@ -14,4 +14,4 @@ public:
     frame decode(const uint8_t raw[8]);
 };
 
-} // namespace pren_uart
+} // namespace prain_uart

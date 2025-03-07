@@ -1,22 +1,22 @@
 cmake_minimum_required(VERSION 3.10)
-project(pren_uart VERSION 1.0.0 LANGUAGES CXX)
+project(prain_uart VERSION 1.0.0 LANGUAGES CXX)
 
-add_library(my_uart_protocol
+add_library(prain_uart
     src/decoder.cpp
     src/encoder.cpp
     src/protocol.cpp
 )
 
-target_compile_features(pren_uart PUBLIC cxx_std_17)
+target_compile_features(prain_uart PUBLIC cxx_std_17)
 
-target_include_directories(pren_uart
+target_include_directories(prain_uart
     PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
 
-install(TARGETS pren_uart
-    EXPORT pren_uartConfigs
+install(TARGETS prain_uart
+    EXPORT prain_uartConfigs
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin)

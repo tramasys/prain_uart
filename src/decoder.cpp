@@ -1,6 +1,6 @@
-#include "pren_uart/decoder.hpp"
+#include "prain_uart/decoder.hpp"
 
-namespace pren_uart {
+namespace prain_uart {
 
 frame decoder::decode(const uint8_t raw[8])
 {
@@ -8,4 +8,4 @@ frame decoder::decode(const uint8_t raw[8])
     return result;
 }
 
-} // namespace pren_uart
+} // namespace prain_uart

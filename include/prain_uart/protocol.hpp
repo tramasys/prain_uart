@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <cstddef>
 
-namespace pren_uart {
+namespace prain_uart {
 
 constexpr std::size_t FRAME_SIZE_BITS = 64;
 constexpr std::size_t ADDR_SIZE_BITS  = 2;
@@ -36,4 +36,4 @@ struct frame {
     uint8_t crc;
 };
 
-} // namespace pren_uart
+} // namespace prain_uart

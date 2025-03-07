@@ -1,6 +1,6 @@
-#include "pren_uart/encoder.hpp"
+#include "prain_uart/encoder.hpp"
 
-namespace pren_uart {
+namespace prain_uart {
 
 void encoder::encode(const frame &f, uint8_t out[8])
 {
@@ -9,4 +9,4 @@ void encoder::encode(const frame &f, uint8_t out[8])
     }
 }
 
-} // namespace pren_uart
+} // namespace prain_uart

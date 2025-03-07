@@ -1,6 +1,6 @@
-#include "pren_uart/protocol.hpp"
+#include "prain_uart/protocol.hpp"
 
-namespace pren_uart
+namespace prain_uart
 {
 
-} // namespace pren_uart
+} // namespace prain_uart
