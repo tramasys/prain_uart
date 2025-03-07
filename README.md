@@ -13,7 +13,7 @@ A C++ library providing an encoder and decoder for our 64-bit UART protocol used
 1. Clone or copy this `prain_uart` folder into your workspace.
 2. From the `prain_uart` directory:
 ```bash
-cmake -S . -B build
+cmake -S . -B build # -DCMAKE_BUILD_TYPE=Debug
 cmake --build build
 # or on linux: cmake --build build -- -j$(nproc)
 ```

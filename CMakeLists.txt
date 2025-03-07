@@ -24,3 +24,19 @@ install(TARGETS prain_uart
 install(DIRECTORY include/
     DESTINATION include
 )
+
+add_executable(prain_testexec
+    test/main.cpp
+)
+
+target_compile_options(${PROJECT_NAME} PRIVATE
+	#-fno-exceptions
+	#-fno-unwind-tables
+	#-fno-asynchronous-unwind-tables
+	-Wall
+	-Wextra
+	-Wpedantic
+	-g3
+)
+
+target_link_libraries(prain_testexec PRIVATE prain_uart)
