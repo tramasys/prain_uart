@@ -11,12 +11,21 @@ namespace prain_uart {
 template<typename T, T Max>
 struct limited_value {
     T value;
-    // constexpr constructor so that, for constant expressions, out-of-range values are caught at compile time if possible
+
     constexpr limited_value(T v) : value(v) {
         if(v > Max)
             throw std::out_of_range("Value exceeds allowed bit-field range");
     }
-    // Implicit conversion to T
+
+    // Allow construction from enum if its underlying type is T.
+    template<typename U, typename = std::enable_if_t<
+        std::is_enum<U>::value && std::is_same_v<std::underlying_type_t<U>, T>
+    >>
+    constexpr limited_value(U u) : value(static_cast<T>(u)) {
+        if(value > Max)
+            throw std::out_of_range("Value exceeds allowed bit-field range");
+    }
+
     constexpr operator T() const { return value; }
 };
 

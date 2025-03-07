@@ -3,8 +3,17 @@
 
 int main() {
 	prain_uart::frame a;
-	a.set_addr(0b11);
-	a.set_cmd(0b10000);
+
+	uint8_t b;
+	a.set_addr(prain_uart::address::RASPBERRY_HAT);
+	b = a.addr();
+	a.set_addr(prain_uart::address::MOTION_CTRL);
+	b = a.addr();
+	a.set_addr(prain_uart::address::GRIP_CTRL);
+	b = a.addr();
+
+	a.set_addr(0b00);
+	a.set_cmd(0b0000);
 	a.set_parameter(0b11111111111111111111111111111111111111111111111111);
 	a.set_crc(0b00000000);
 

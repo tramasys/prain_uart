@@ -13,21 +13,21 @@ constexpr std::size_t PARAM_SIZE_BITS = 50;
 constexpr std::size_t CRC_SIZE_BITS   = 8;
 
 enum class address : uint8_t {
-    raspberry_hat   = 0b00,
-    motion_ctrl     = 0b01,
-    grip_ctrl       = 0b11
+    RASPBERRY_HAT   = 0b00,
+    MOTION_CTRL     = 0b01,
+    GRIP_CTRL       = 0b11
 };
 
 enum class command : uint8_t {
-    move            = 0x0,
-    reverse         = 0x1,
-    turn            = 0x2,
-    rotate          = 0x3,
-    stop_normal     = 0x4,
-    stop_emergency  = 0x5,
-    info            = 0x6,
-    ping            = 0x7,
-    error_check     = 0x8
+    MOVE            = 0x0,
+    REVERSE         = 0x1,
+    TURN            = 0x2,
+    ROTATE          = 0x3,
+    STOP_NORMAL     = 0x4,
+    STOP_EMERGENCY  = 0x5,
+    INFO            = 0x6,
+    PING            = 0x7,
+    ERROR_CHECK     = 0x8
 };
 
 using addr_field = limited_value<uint8_t, 3>;
