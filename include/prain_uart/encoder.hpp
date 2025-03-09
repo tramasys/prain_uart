@@ -10,9 +10,9 @@ frame encode_move(address addr, uint16_t move_arg);
 
 frame encode_reverse(address addr, uint16_t reverse_arg);
 
-frame encode_turn(address addr, uint16_t turn_arg);
+frame encode_turn(address addr, int16_t turn_arg);
 
-frame encode_rotate(address addr, uint16_t rotate_arg);
+frame encode_rotate(address addr, int16_t rotate_arg);
 
 frame encode_stop_normal(address addr);
 

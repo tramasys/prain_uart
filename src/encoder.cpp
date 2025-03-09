@@ -23,7 +23,7 @@ frame encode_reverse(address addr, uint16_t reverse_arg) {
     return f;
 }
 
-frame encode_turn(address addr, uint16_t turn_arg) {
+frame encode_turn(address addr, int16_t turn_arg) {
     frame f;
     f.set_addr(addr);
     f.set_cmd(command::TURN);
@@ -33,7 +33,7 @@ frame encode_turn(address addr, uint16_t turn_arg) {
     return f;
 }
 
-frame encode_rotate(address addr, uint16_t rotate_arg) {
+frame encode_rotate(address addr, int16_t rotate_arg) {
     frame f;
     f.set_addr(addr);
     f.set_cmd(command::ROTATE);

@@ -58,7 +58,7 @@ public:
     inline void set_crc(uint8_t c)  { set_crc(crc_field(c)); }
 
     // Extract only the 56 payload bits
-    inline uint64_t payload() const { return _field & (((uint64_t)1 << 56) - 1); }
+    inline uint64_t payload() const { return _field & (((uint64_t)1 << PAYLOAD_SIZE_BITS) - 1); }
 
     // For testing purposes, return the underlying 64-bit field
     inline uint64_t raw() const { return _field; }
