@@ -38,6 +38,8 @@
 		"system_error": "cpp",
 		"functional": "cpp",
 		"tuple": "cpp",
-		"utility": "cpp"
+		"utility": "cpp",
+		"compare": "cpp",
+		"cstdint": "cpp"
 	}
 }

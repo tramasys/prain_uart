@@ -1,17 +1,22 @@
 #pragma once
 
-#include <cstdint>
-#include "protocol.hpp"
+#include "prain_uart/protocol.hpp"
+#include "prain_uart/crc.hpp"
 
 namespace prain_uart {
+namespace encoder {
 
-class encoder
-{
-public:
-    encoder() = default;
-    ~encoder() = default;
+frame encode_move(address addr, uint16_t move_arg);
 
-    void encode(const frame &f, uint8_t out[8]);
-};
+frame encode_reverse(address addr, uint16_t reverse_arg);
 
+frame encode_turn(address addr, uint16_t turn_arg);
+
+frame encode_rotate(address addr, uint16_t rotate_arg);
+
+frame encode_stop_normal(address addr);
+
+frame encode_stop_emergency(address addr);
+
+} // namespace encoder
 } // namespace prain_uart

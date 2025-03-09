@@ -41,25 +41,26 @@ private:
 public:
     frame() : _field(0) {}
 
-    inline uint8_t addr() const         { return READFROM(_field, 0, 2); }
-    inline uint8_t cmd() const          { return READFROM(_field, 2, 4); }
-    inline uint64_t parameter() const   { return READFROM(_field, 6, 50); }
-    inline uint8_t crc() const          { return READFROM(_field, 56, 8); }
+    inline uint8_t addr() const         { return READFROM(_field, 0, ADDR_SIZE_BITS); }
+    inline uint8_t cmd() const          { return READFROM(_field, 2, CMD_SIZE_BITS); }
+    inline uint64_t parameter() const   { return READFROM(_field, 6, PARAM_SIZE_BITS); }
+    inline uint8_t crc() const          { return READFROM(_field, 56, CRC_SIZE_BITS); }
 
-    inline void set_addr(addr_field a)      { WRITETO(_field, 0, 2, static_cast<uint8_t>(a)); }
-    inline void set_cmd(cmd_field c)        { WRITETO(_field, 2, 4, static_cast<uint8_t>(c)); }
-    inline void set_parameter(uint64_t p)   { WRITETO(_field, 6, 50, p); }
-    inline void set_crc(crc_field c)        { WRITETO(_field, 56, 8, static_cast<uint8_t>(c)); }
-};
+    inline void set_addr(addr_field a)      { WRITETO(_field, 0, ADDR_SIZE_BITS, static_cast<uint8_t>(a)); }
+    inline void set_cmd(cmd_field c)        { WRITETO(_field, 2, CMD_SIZE_BITS, static_cast<uint8_t>(c)); }
+    inline void set_parameter(uint64_t p)   { WRITETO(_field, 6, PARAM_SIZE_BITS, p); }
+    inline void set_crc(crc_field c)        { WRITETO(_field, 56, CRC_SIZE_BITS, static_cast<uint8_t>(c)); }
 
-/*
-struct frame {
-    uint64_t field;
-    FIELD(field, addr, 0, 2);
-    FIELD(field, cmd, 2, 4);
-    FIELD(field, parameter, 6, 50);
-    FIELD(field, crc, 56, 8);
+    // Overloads for cleaner API usage
+    inline void set_addr(address a) { set_addr(addr_field(static_cast<uint8_t>(a))); }
+    inline void set_cmd(command c)  { set_cmd(cmd_field(static_cast<uint8_t>(c))); }
+    inline void set_crc(uint8_t c)  { set_crc(crc_field(c)); }
+
+    // Extract only the 56 payload bits
+    inline uint64_t payload() const { return _field & (((uint64_t)1 << 56) - 1); }
+
+    // For testing purposes, return the underlying 64-bit field
+    inline uint64_t raw() const { return _field; }
 };
-*/
 
 } // namespace prain_uart

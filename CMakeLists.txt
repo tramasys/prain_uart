@@ -5,6 +5,7 @@ add_library(prain_uart
     src/decoder.cpp
     src/encoder.cpp
     src/protocol.cpp
+    src/crc.cpp
 )
 
 target_compile_features(prain_uart PUBLIC cxx_std_17)
@@ -29,7 +30,7 @@ add_executable(prain_testexec
     test/main.cpp
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE
+target_compile_options(prain_testexec PRIVATE
 	#-fno-exceptions
 	#-fno-unwind-tables
 	#-fno-asynchronous-unwind-tables

@@ -1,7 +1,24 @@
 #include <iostream>
 #include "../include/prain_uart/protocol.hpp"
+#include "../include/prain_uart/encoder.hpp"
+#include "../include/prain_uart/decoder.hpp"
 
 int main() {
+
+	prain_uart::frame test = prain_uart::encoder::encode_reverse(prain_uart::address::RASPBERRY_HAT, 420);
+	auto t1 = test.addr();
+	auto t2 = test.cmd();
+	auto t3 = test.parameter();
+	auto t4 = test.crc();
+
+	auto sss = test.raw();
+	prain_uart::decoder::decoded_frame test2 = prain_uart::decoder::decode(sss);
+	auto t5 = test2.addr;
+	auto t6 = test2.cmd;
+	auto t7 = test2.arg;
+	auto t8 = test2.has_arg;
+	auto t9 = test2.crc_ok;
+
 	prain_uart::frame a;
 
 	uint8_t b = 0;
