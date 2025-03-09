@@ -7,6 +7,7 @@
 namespace prain_uart {
 
 constexpr std::size_t FRAME_SIZE_BITS = 64;
+constexpr std::size_t PAYLOAD_SIZE_BITS = 56;
 constexpr std::size_t ADDR_SIZE_BITS  = 2;
 constexpr std::size_t CMD_SIZE_BITS   = 4;
 constexpr std::size_t PARAM_SIZE_BITS = 50;

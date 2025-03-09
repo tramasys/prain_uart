@@ -10,10 +10,10 @@ decoded_frame decode(uint64_t raw_frame) {
     result.cmd  = static_cast<command>(READFROM(raw_frame, ADDR_SIZE_BITS, CMD_SIZE_BITS));
 
     uint64_t parameter = READFROM(raw_frame, ADDR_SIZE_BITS + CMD_SIZE_BITS, PARAM_SIZE_BITS);
-    uint8_t crc_read   = READFROM(raw_frame, ADDR_SIZE_BITS + CMD_SIZE_BITS + PARAM_SIZE_BITS, CRC_SIZE_BITS);
+    uint8_t crc_read   = READFROM(raw_frame, PAYLOAD_SIZE_BITS, CRC_SIZE_BITS);
 
-    uint64_t payload = raw_frame & (((uint64_t)1 << (ADDR_SIZE_BITS + CMD_SIZE_BITS + PARAM_SIZE_BITS)) - 1);
-    uint8_t crc_calc = calculate_crc8_atm(payload, ADDR_SIZE_BITS + CMD_SIZE_BITS + PARAM_SIZE_BITS);
+    uint64_t payload = raw_frame & (((uint64_t)1 << (PAYLOAD_SIZE_BITS)) - 1);
+    uint8_t crc_calc = calculate_crc8_atm(payload, PAYLOAD_SIZE_BITS);
     result.crc_ok = (crc_calc == crc_read);
 
     switch(result.cmd) {
