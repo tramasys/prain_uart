@@ -17,3 +17,9 @@ cmake -S . -B build # -DCMAKE_BUILD_TYPE=Debug
 cmake --build build
 # or on linux: cmake --build build -- -j$(nproc)
 ```
+
+Building for 32bit architectures:
+```bash
+cmake -S . -B build32 -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_EXE_LINKER_FLAGS="-m32"
+cmake --build build32
+```
