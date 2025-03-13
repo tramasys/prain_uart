@@ -40,4 +40,8 @@ target_compile_options(prain_testexec PRIVATE
 	-g3
 )
 
+if(STATIC_LINK)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libstdc++ -static-libgcc")
+endif()
+
 target_link_libraries(prain_testexec PRIVATE prain_uart)

@@ -23,3 +23,20 @@ Building for 32bit architectures:
 cmake -S . -B build32 -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_EXE_LINKER_FLAGS="-m32"
 cmake --build build32
 ```
+
+## Testing lib for 32bit
+1. Pull and run a 32bit docker image
+```bash
+docker pull i386/ubuntu:20.04
+docker run -it --rm --name test32 i386/ubuntu:20.04 bash
+```
+2. Install libs & debugger for verification
+```bash
+apt update && apt instll -y gdb
+```
+
+3. Compile lib statically (.so in the docker container won't match your machines shared libraries) and for 32bit
+```bash
+cmake -S . -B build32 -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_EXE_LINKER_FLAGS="-m32" -DSTATIC_LINK=ON
+cmake --build build32
+```
