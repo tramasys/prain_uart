@@ -18,21 +18,6 @@ int main() {
 	auto nraw_bbb = dec_bbb.get_raw_parameters();
 	auto nparams_bbb = dec_bbb.get_params<prain_uart::response_params>();
 
-	prain_uart::frame aaa1 = prain_uart::encoder::encode_info(
-		prain_uart::address::RASPBERRY_HAT,
-		prain_uart::info_flag::TEMPERATURE
-	);
-
-	prain_uart::frame aaa2 = prain_uart::encoder::encode_error(
-		prain_uart::address::RASPBERRY_HAT,
-		prain_uart::error_code::INVALID_CRC
-	);
-
-	prain_uart::frame aaa3 = prain_uart::encoder::encode_poll(
-		prain_uart::address::RASPBERRY_HAT,
-		prain_uart::poll_id::LINE_SENSOR
-	);
-
 	prain_uart::frame test = prain_uart::encoder::encode_turn(
 		prain_uart::address::RASPBERRY_HAT,
 		-420
