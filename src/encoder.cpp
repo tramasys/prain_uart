@@ -109,7 +109,11 @@ frame encode_response(address addr, uint8_t poll_id, uint16_t data) {
     frame f;
     f.set_addr(addr);
     f.set_cmd(command::RESPONSE);
-    f.set_parameter(static_cast<uint64_t>(poll_id) << 16 | data);
+
+    // poll_id -> bits [0..7], data -> bits [8..23]:
+    uint64_t param = (static_cast<uint64_t>(poll_id) & 0xFF) | (static_cast<uint64_t>(data) & 0xFFFF) << 8;
+    f.set_parameter(param);
+
     uint8_t crc = calculate_crc8_atm(f.payload(), 56);
     f.set_crc(crc);
     return f;

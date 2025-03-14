@@ -5,6 +5,19 @@
 
 int main() {
 
+	prain_uart::frame bbb = prain_uart::encoder::encode_response(
+		prain_uart::address::RASPBERRY_HAT,
+		prain_uart::poll_id::DISTANCE,
+		420
+	);
+
+	prain_uart::decoder dec_bbb(bbb.raw());
+	auto naddr_bbb = dec_bbb.get_address();
+	auto ncmd_bbb = dec_bbb.get_command();
+	auto crc_bbb = dec_bbb.verify_crc();
+	auto nraw_bbb = dec_bbb.get_raw_parameters();
+	auto nparams_bbb = dec_bbb.get_params<prain_uart::response_params>();
+
 	prain_uart::frame aaa1 = prain_uart::encoder::encode_info(
 		prain_uart::address::RASPBERRY_HAT,
 		prain_uart::info_flag::TEMPERATURE

@@ -106,6 +106,8 @@ poll_params decoder::decode_poll() const {
 response_params decoder::decode_response() const {
     uint64_t param = extract_parameter();
     response_params r{};
+
+    // poll_id -> bits [0..7], data -> bits [8..23]:
     r.poll_id = static_cast<uint8_t>(param & 0xFF);
     r.data    = static_cast<uint16_t>((param >> 8) & 0xFFFF);
     return r;
