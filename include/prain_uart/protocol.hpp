@@ -48,7 +48,7 @@ enum class crane_flag : uint8_t {
 enum class poll_id : uint8_t {
     DEGREE          = 0x0,
     DISTANCE        = 0x1,
-    LINE_SENSOR     = 0x2
+    LINE_SENSOR     = 0x2,
     // more ...
 };
 
@@ -63,31 +63,31 @@ using crc_field  = limited_value<uint8_t, 255>;
 
 struct frame {
 private:
-    uint64_t _field;
+    uint64_t _field{0};
 
 public:
-    frame() : _field(0) {}
+    frame() = default;
 
-    inline uint8_t addr() const         { return READFROM(_field, 0, ADDR_SIZE_BITS); }
-    inline uint8_t cmd() const          { return READFROM(_field, 2, CMD_SIZE_BITS); }
-    inline uint64_t parameter() const   { return READFROM(_field, 6, PARAM_SIZE_BITS); }
-    inline uint8_t crc() const          { return READFROM(_field, 56, CRC_SIZE_BITS); }
+    inline uint8_t addr() const { return read_from<0, ADDR_SIZE_BITS>(_field); }
+    inline uint8_t cmd() const { return read_from<2, CMD_SIZE_BITS>(_field); }
+    inline uint64_t parameter() const { return read_from<6, PARAM_SIZE_BITS>(_field); }
+    inline uint8_t crc() const { return read_from<56, CRC_SIZE_BITS>(_field); }
 
-    inline void set_addr(addr_field a)      { WRITETO(_field, 0, ADDR_SIZE_BITS, static_cast<uint8_t>(a)); }
-    inline void set_cmd(cmd_field c)        { WRITETO(_field, 2, CMD_SIZE_BITS, static_cast<uint8_t>(c)); }
-    inline void set_parameter(uint64_t p)   { WRITETO(_field, 6, PARAM_SIZE_BITS, p); }
-    inline void set_crc(crc_field c)        { WRITETO(_field, 56, CRC_SIZE_BITS, static_cast<uint8_t>(c)); }
+    inline void set_addr(addr_field a) { write_to<0, ADDR_SIZE_BITS>(_field, a); }
+    inline void set_cmd(cmd_field c) { write_to<2, CMD_SIZE_BITS>(_field, c); }
 
-    // Overloads for cleaner API usage
+    // ensure that only the lower 50 bits are set
+    inline void set_parameter(uint64_t p) { write_to<6, PARAM_SIZE_BITS>(_field, p & ((uint64_t{1} << PARAM_SIZE_BITS) - 1)); }
+    inline void set_crc(crc_field c) { write_to<56, CRC_SIZE_BITS>(_field, c); }
+
     inline void set_addr(address a) { set_addr(addr_field(static_cast<uint8_t>(a))); }
-    inline void set_cmd(command c)  { set_cmd(cmd_field(static_cast<uint8_t>(c))); }
-    inline void set_crc(uint8_t c)  { set_crc(crc_field(c)); }
+    inline void set_cmd(command c) { set_cmd(cmd_field(static_cast<uint8_t>(c))); }
+    inline void set_crc(uint8_t c) { set_crc(crc_field(c)); }
 
-    // Extract only the 56 payload bits
-    inline uint64_t payload() const { return _field & (((uint64_t)1 << PAYLOAD_SIZE_BITS) - 1); }
+    inline uint64_t payload() const { return _field & ((uint64_t{1} << PAYLOAD_SIZE_BITS) - 1); }
 
-    // For testing purposes, return the underlying 64-bit field
     inline uint64_t raw() const { return _field; }
+    inline void set_raw(uint64_t raw_frame) { _field = raw_frame; }
 };
 
 } // namespace prain_uart

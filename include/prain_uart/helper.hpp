@@ -3,41 +3,38 @@
 #include <cstdint>
 #include <stdexcept>
 #include <type_traits>
-#include "protocol.hpp"
 
 namespace prain_uart {
 
-// Strong type that only allows values <= Max
-template<typename T, T Max>
+template <typename T, T Max>
 struct limited_value {
     T value;
 
     constexpr limited_value(T v) : value(v) {
-        if(v > Max)
-            throw std::out_of_range("Value exceeds allowed bit-field range");
+        if (v > Max) throw std::out_of_range("Value exceeds allowed bit-field range");
     }
 
-    // Allow construction from enum if its underlying type is T
-    template<typename U, typename = std::enable_if_t<
-        std::is_enum<U>::value && std::is_same_v<std::underlying_type_t<U>, T>
-    >>
-    constexpr limited_value(U u) : value(static_cast<T>(u)) {
-        if(value > Max)
-            throw std::out_of_range("Value exceeds allowed bit-field range");
-    }
+    template <typename U, typename = std::enable_if_t<
+        std::is_enum_v<U> && std::is_same_v<std::underlying_type_t<U>, T>>>
+    constexpr limited_value(U u) : limited_value(static_cast<T>(u)) {}
 
     constexpr operator T() const { return value; }
 };
 
-#define GETMASK(index, size) ((((uint64_t)1 << (size)) - 1ULL) << (index))
-#define READFROM(data, index, size) (((data) & GETMASK((index), (size))) >> (index))
+template <std::size_t Index, std::size_t Size>
+inline constexpr uint64_t get_mask() {
+    static_assert(Index + Size <= 64, "Bit field exceeds 64 bits");
+    return ((uint64_t{1} << Size) - 1) << Index;
+}
 
-#define WRITETO(data, index, size, value) \
-    ((data) = (((data) & ~GETMASK((index), (size))) | \
-              (((static_cast<uint64_t>(value)) << (index)) & GETMASK((index), (size)))))
+template <std::size_t Index, std::size_t Size>
+inline uint64_t read_from(uint64_t data) {
+    return (data & get_mask<Index, Size>()) >> Index;
+}
 
-#define FIELD(data, name, index, size) \
-	inline decltype(data) name() const { return READFROM(data, index, size); } \
-	inline void set_##name(decltype(data) value) { WRITETO(data, index, size, value); }
+template <std::size_t Index, std::size_t Size>
+inline void write_to(uint64_t& data, uint64_t value) {
+    data = (data & ~get_mask<Index, Size>()) | ((value << Index) & get_mask<Index, Size>());
+}
 
 } // namespace prain_uart
