@@ -30,15 +30,12 @@ decoder::params_variant decoder::decode_parameters() const {
             return decode_reverse();
         case command::TURN:
             return decode_turn();
-        case command::ROTATE:
-            return decode_rotate();
-        case command::STOP_NORMAL:
-        case command::STOP_EMERGENCY:
+        case command::STOP:
         case command::PING:
             return empty_params{};
         case command::INFO:
             return decode_info();
-        case command::ERROR_CHECK:
+        case command::ERROR:
             return decode_error_check();
         default:
             throw std::runtime_error("unknown command");

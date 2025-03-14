@@ -29,7 +29,7 @@ enum class command : uint8_t {
     PONG            = 0x6,
     ERROR           = 0x7,
     POLL            = 0x8,
-    RSP             = 0x9,
+    RESPONSE        = 0x9,
     CRANE           = 0xA,
 };
 

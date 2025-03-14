@@ -5,7 +5,26 @@
 
 int main() {
 
-	prain_uart::frame test = prain_uart::encoder::encode_turn(prain_uart::address::RASPBERRY_HAT, -420);
+	prain_uart::frame aaa1 = prain_uart::encoder::encode_info(
+		prain_uart::address::RASPBERRY_HAT,
+		prain_uart::info_flag::TEMPERATURE
+	);
+
+	prain_uart::frame aaa2 = prain_uart::encoder::encode_error(
+		prain_uart::address::RASPBERRY_HAT,
+		prain_uart::error_code::INVALID_CRC
+	);
+
+	prain_uart::frame aaa3 = prain_uart::encoder::encode_poll(
+		prain_uart::address::RASPBERRY_HAT,
+		prain_uart::poll_id::LINE_SENSOR
+	);
+
+	prain_uart::frame test = prain_uart::encoder::encode_turn(
+		prain_uart::address::RASPBERRY_HAT,
+		-420
+	);
+
 	auto t1 = test.addr();
 	auto t2 = test.cmd();
 	auto t3 = test.parameter();
