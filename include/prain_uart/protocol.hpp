@@ -23,12 +23,38 @@ enum class command : uint8_t {
     MOVE            = 0x0,
     REVERSE         = 0x1,
     TURN            = 0x2,
-    ROTATE          = 0x3,
-    STOP_NORMAL     = 0x4,
-    STOP_EMERGENCY  = 0x5,
-    INFO            = 0x6,
-    PING            = 0x7,
-    ERROR_CHECK     = 0x8
+    STOP            = 0x3,
+    INFO            = 0x4,
+    PING            = 0x5,
+    PONG            = 0x6,
+    ERROR           = 0x7,
+    POLL            = 0x8,
+    RSP             = 0x9,
+    CRANE           = 0xA,
+};
+
+enum class info_flag : uint8_t {
+    BATTERY         = 0x0,
+    TEMPERATURE     = 0x1,
+    // more ...
+};
+
+enum class crane_flag : uint8_t {
+    UP              = 0x0,
+    DOWN            = 0x1,
+    // more ...
+};
+
+enum class poll_id : uint8_t {
+    DEGREE          = 0x0,
+    DISTANCE        = 0x1,
+    LINE_SENSOR     = 0x2
+    // more ...
+};
+
+enum class error_code : uint16_t {
+    INVALID_CRC     = 0x0,
+    // more ...
 };
 
 using addr_field = limited_value<uint8_t, 3>;
