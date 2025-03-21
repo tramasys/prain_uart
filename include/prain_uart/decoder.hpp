@@ -1,7 +1,6 @@
 #pragma once
 
 #include <variant>
-#include <stdexcept>
 #include "prain_uart/protocol.hpp"
 #include "prain_uart/crc.hpp"
 
@@ -42,7 +41,7 @@ public:
     T get_params() const {
         auto params = decode_parameters();
         if (auto* p = std::get_if<T>(&params)) return *p;
-        throw std::runtime_error("Decoded parameter type mismatch");
+        return T{};
     }
 
 private:

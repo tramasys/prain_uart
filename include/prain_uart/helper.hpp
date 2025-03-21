@@ -10,9 +10,8 @@ template <typename T, T Max>
 struct limited_value {
     T value;
 
-    constexpr limited_value(T v) : value(v) {
-        if (v > Max) throw std::out_of_range("Value exceeds allowed bit-field range");
-    }
+    // no exception, clamp value instead
+    constexpr limited_value(T v) : value((v <= Max) ? v : Max) {}
 
     template <typename U, typename = std::enable_if_t<
         std::is_enum_v<U> && std::is_same_v<std::underlying_type_t<U>, T>>>

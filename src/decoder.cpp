@@ -23,7 +23,7 @@ decoder::params_variant decoder::decode_parameters() const {
         case command::POLL:     return decode<poll_params>();
         case command::RESPONSE: return decode<response_params>();
         case command::CRANE:    return decode<crane_params>();
-        default: throw std::runtime_error("Unknown command");
+        default:                return empty_params{};
     }
 }
 

@@ -175,17 +175,19 @@ TEST_F(PrainUartTest, CraneRoundTrip) {
 	EXPECT_EQ(params.flag, static_cast<uint8_t>(prain_uart::crane_flag::UP));
 }
 
-TEST_F(PrainUartTest, TypeMismatchThrows) {
+TEST_F(PrainUartTest, TypeMismatchReturnsEmptyParams) {
     prain_uart::frame f = prain_uart::encoder::encode_move(
         prain_uart::address::RASPBERRY_HAT,
         5678
     );
     prain_uart::decoder dec(f.raw());
 
-    EXPECT_THROW(
-        dec.get_params<prain_uart::response_params>(),
-        std::runtime_error
-    );
+	EXPECT_EQ(dec.get_address(), prain_uart::address::RASPBERRY_HAT);
+	EXPECT_EQ(dec.get_command(), prain_uart::command::MOVE);
+	EXPECT_TRUE(dec.verify_crc());
+
+	auto params = dec.get_params<prain_uart::info_params>();
+	EXPECT_EQ(params.flag, 0);
 }
 
 TEST_F(PrainUartTest, ValidCrc) {
@@ -208,18 +210,4 @@ TEST_F(PrainUartTest, InvalidCrc) {
     prain_uart::decoder dec(raw);
 
     EXPECT_FALSE(dec.verify_crc());
-}
-
-TEST_F(PrainUartTest, UnknownCommandThrows) {
-    prain_uart::frame f;
-    f.set_addr(prain_uart::address::RASPBERRY_HAT);
-    f.set_cmd(prain_uart::cmd_field(0xF)); // Invalid command (15)
-    f.set_parameter(0);
-    f.set_crc(prain_uart::calculate_crc8_atm(f.payload(), prain_uart::PAYLOAD_SIZE_BITS));
-
-    prain_uart::decoder dec(f.raw());
-    EXPECT_THROW(
-        dec.get_params<prain_uart::empty_params>(),
-        std::runtime_error
-    );
 }
