@@ -211,3 +211,16 @@ TEST_F(PrainUartTest, InvalidCrc) {
 
     EXPECT_FALSE(dec.verify_crc());
 }
+
+TEST_F(PrainUartTest, CrcFromPythonLibIsCorrect) {
+	// Encoded in python lib as: frame = encode_move(Address.MOTION_CTRL, 420)
+	uint64_t data = 0b100111100000000000000000000000000000000000000000110100100000001;
+
+	prain_uart::frame f;
+	f.set_raw(data);
+
+	EXPECT_EQ(f.crc(), 79);
+	EXPECT_EQ(prain_uart::calculate_crc8_atm(data, 50), 79);
+	EXPECT_EQ(prain_uart::calculate_crc8_atm(data, 50), 0x4f);
+	EXPECT_EQ(prain_uart::calculate_crc8_atm(data, 50), f.crc());
+}

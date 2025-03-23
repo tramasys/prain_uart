@@ -350,3 +350,4 @@ _deps
 
 # Exclude test executables
 **/prain_testexec
+**/prain_unittests
