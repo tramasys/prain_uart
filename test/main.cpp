@@ -5,6 +5,17 @@
 
 int main() {
 
+	prain_uart::frame pytest;
+	// move 100 to motion ctrl
+	pytest.set_raw(0b1110110100000000000000000000000000000000000000000001100100000001);
+
+	prain_uart::decoder dec1(pytest);
+	auto a1 = dec1.get_address();
+	auto c1 = dec1.get_command();
+	auto crc1 = dec1.get_crc();
+	auto raw_params1 = dec1.get_raw_parameters();
+	auto nparams1 = dec1.get_params<prain_uart::move_params>();
+
 	prain_uart::frame bbb = prain_uart::encoder::encode_response(
 		prain_uart::address::RASPBERRY_HAT,
 		prain_uart::poll_id::DISTANCE,
@@ -27,16 +38,6 @@ int main() {
 	auto t2 = test.cmd();
 	auto t3 = test.parameter();
 	auto t4 = test.crc();
-
-	prain_uart::decoder dec(test.raw());
-	auto d1 = dec.get_address();
-	auto d2 = dec.get_command();
-	auto d3 = dec.get_raw_parameters();
-	auto d4 = dec.get_crc();
-	auto d5 = dec.decode_parameters();
-	auto d6 = dec.verify_crc();
-
-	auto nparams = dec.get_params<prain_uart::turn_params>();
 
 	prain_uart::frame a;
 
