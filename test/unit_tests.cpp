@@ -159,20 +159,30 @@ TEST_F(PrainUartTest, ResponseRoundTrip) {
     EXPECT_EQ(params.data, 420);
 }
 
-TEST_F(PrainUartTest, CraneRoundTrip) {
-	prain_uart::frame f = prain_uart::encoder::encode_crane(
-		prain_uart::address::RASPBERRY_HAT,
-		static_cast<uint8_t>(prain_uart::crane_flag::UP)
+TEST_F(PrainUartTest, GripRoundTrip) {
+	prain_uart::frame f = prain_uart::encoder::encode_grip(
+		prain_uart::address::GRIP_CTRL
 	);
 	prain_uart::decoder dec(f.raw());
 
-	EXPECT_EQ(dec.get_address(), prain_uart::address::RASPBERRY_HAT);
-	EXPECT_EQ(dec.get_command(), prain_uart::command::CRANE);
+	EXPECT_EQ(dec.get_address(), prain_uart::address::GRIP_CTRL);
+	EXPECT_EQ(dec.get_command(), prain_uart::command::GRIP);
 	EXPECT_TRUE(dec.verify_crc());
-	EXPECT_EQ(dec.get_raw_parameters(), static_cast<uint8_t>(prain_uart::crane_flag::UP));
 
-	auto params = dec.get_params<prain_uart::crane_params>();
-	EXPECT_EQ(params.flag, static_cast<uint8_t>(prain_uart::crane_flag::UP));
+	EXPECT_NO_THROW(dec.get_params<prain_uart::empty_params>());
+}
+
+TEST_F(PrainUartTest, ReleaseRoundTrip) {
+	prain_uart::frame f = prain_uart::encoder::encode_release(
+		prain_uart::address::GRIP_CTRL
+	);
+	prain_uart::decoder dec(f.raw());
+
+	EXPECT_EQ(dec.get_address(), prain_uart::address::GRIP_CTRL);
+	EXPECT_EQ(dec.get_command(), prain_uart::command::RELEASE);
+	EXPECT_TRUE(dec.verify_crc());
+
+	EXPECT_NO_THROW(dec.get_params<prain_uart::empty_params>());
 }
 
 TEST_F(PrainUartTest, TypeMismatchReturnsEmptyParams) {

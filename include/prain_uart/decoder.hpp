@@ -16,7 +16,6 @@ struct ping_params      { uint8_t id; };
 struct pong_params      { uint8_t id; };
 struct poll_params      { uint8_t poll_id; };
 struct response_params  { uint8_t poll_id; uint16_t data; };
-struct crane_params     { uint8_t flag; };
 struct empty_params     {};
 
 class decoder {
@@ -24,7 +23,7 @@ public:
     using params_variant = std::variant<
         move_params, reverse_params, turn_params, rotate_params,
         info_params, empty_params, error_params, ping_params,
-        pong_params, poll_params, response_params, crane_params
+        pong_params, poll_params, response_params
     >;
 
     explicit decoder(const frame& f);

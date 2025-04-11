@@ -30,8 +30,8 @@ enum class command : uint8_t {
     ERROR           = 0x7,
     POLL            = 0x8,
     RESPONSE        = 0x9,
-    CRANE_UP        = 0xA,
-    CRANE_DOWN      = 0xB,
+    GRIP            = 0xA,
+    RELEASE         = 0xB,
 };
 
 enum class info_flag : uint8_t {
@@ -40,12 +40,6 @@ enum class info_flag : uint8_t {
     LOST_LINE       = 0x2,
     NODE_DETECTED   = 0x3,
     BARRIER_DETECTED= 0x4,
-    // more ...
-};
-
-enum class crane_flag : uint8_t {
-    UP              = 0x0,
-    DOWN            = 0x1,
     // more ...
 };
 

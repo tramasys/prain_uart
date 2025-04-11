@@ -30,8 +30,9 @@ frame encode_poll(address addr, poll_id id);
 frame encode_response(address addr, uint8_t poll_id, uint16_t data);
 frame encode_response(address addr, poll_id id, uint16_t data);
 
-frame encode_crane(address addr, uint8_t flag);
-frame encode_crane(address addr, crane_flag flag);
+frame encode_grip(address addr);
+
+frame encode_release(address addr);
 
 } // namespace encoder
 } // namespace prain_uart

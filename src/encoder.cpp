@@ -33,8 +33,6 @@ frame encode(address addr, command cmd, const Params& params) {
         f.set_parameter(static_cast<uint64_t>(params.error_code));
     } else if constexpr (std::is_same_v<Params, poll_params>) {
         f.set_parameter(static_cast<uint64_t>(params.poll_id));
-    } else if constexpr (std::is_same_v<Params, crane_params>) {
-        f.set_parameter(static_cast<uint64_t>(params.flag));
     }
 
     f.set_crc(calculate_crc8_atm(f.payload(), PAYLOAD_SIZE_BITS));
@@ -97,12 +95,12 @@ frame encode_response(address addr, poll_id id, uint16_t data) {
     return encode_response(addr, static_cast<uint8_t>(id), data);
 }
 
-frame encode_crane(address addr, uint8_t flag) {
-    return encode(addr, command::CRANE, crane_params{flag});
+frame encode_grip(address addr) {
+    return encode(addr, command::GRIP, empty_params{});
 }
 
-frame encode_crane(address addr, crane_flag flag) {
-    return encode_crane(addr, static_cast<uint8_t>(flag));
+frame encode_release(address addr) {
+    return encode(addr, command::RELEASE, empty_params{});
 }
 
 } // namespace encoder

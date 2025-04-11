@@ -22,7 +22,8 @@ decoder::params_variant decoder::decode_parameters() const {
         case command::ERROR:    return decode<error_params>();
         case command::POLL:     return decode<poll_params>();
         case command::RESPONSE: return decode<response_params>();
-        case command::CRANE:    return decode<crane_params>();
+        case command::GRIP:     return empty_params{};
+        case command::RELEASE:  return empty_params{};
         default:                return empty_params{};
     }
 }
@@ -53,8 +54,6 @@ T decoder::decode() const {
         return { static_cast<uint8_t>(param) };
     } else if constexpr (std::is_same_v<T, response_params>) {
         return { static_cast<uint8_t>(param), static_cast<uint16_t>(param >> 8) };
-    } else if constexpr (std::is_same_v<T, crane_params>) {
-        return { static_cast<uint8_t>(param) };
     } else if constexpr (std::is_same_v<T, rotate_params>) {
         return { static_cast<int16_t>(param) };
     }
