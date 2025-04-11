@@ -30,12 +30,16 @@ enum class command : uint8_t {
     ERROR           = 0x7,
     POLL            = 0x8,
     RESPONSE        = 0x9,
-    CRANE           = 0xA,
+    CRANE_UP        = 0xA,
+    CRANE_DOWN      = 0xB,
 };
 
 enum class info_flag : uint8_t {
     BATTERY         = 0x0,
     TEMPERATURE     = 0x1,
+    LOST_LINE       = 0x2,
+    NODE_DETECTED   = 0x3,
+    BARRIER_DETECTED= 0x4,
     // more ...
 };
 
@@ -49,11 +53,14 @@ enum class poll_id : uint8_t {
     DEGREE          = 0x0,
     DISTANCE        = 0x1,
     LINE_SENSOR     = 0x2,
+    ULTRASONIC      = 0x3,
     // more ...
 };
 
 enum class error_code : uint16_t {
     INVALID_CRC     = 0x0,
+    INVALID_CMD     = 0x1,
+    INTERNAL        = 0x2,
     // more ...
 };
 
