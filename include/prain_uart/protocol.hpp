@@ -40,6 +40,7 @@ enum class info_flag : uint8_t {
     LOST_LINE       = 0x2,
     NODE_DETECTED   = 0x3,
     BARRIER_DETECTED= 0x4,
+    MOTION_DONE     = 0x5,
     // more ...
 };
 
